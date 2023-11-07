@@ -1,5 +1,5 @@
 <template>
-    <h1>Game Grid: on est sur la grille là</h1>
+    <h1>Game Grid</h1>
     <div class="game-grid">
         <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="row">
             <div v-for="(cell, cellIndex) in row" :key="cellIndex" class="cell">
@@ -21,23 +21,24 @@ export default {
                 ['', '', '', '', '', '']
             ]
         }
+    },
+    methods: {
+
     }
 }
 </script>
 
-<style>
+<style scoped>
 .game-grid {
     display: flex;
     flex-wrap: wrap;
     width: 300px;
 }
-
 .row {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
 }
-
 .cell {
     width: 50px;
     height: 50px;
