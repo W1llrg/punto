@@ -6,7 +6,7 @@
                 {{ player.name }}
             </li>
         </ul>
-        <button type="button" @click="switchTurn()"></button>
+        <button type="button" @click="switchTurn()"> End turn </button>
     </div>
 </template>
 
@@ -37,6 +37,8 @@ export default {
             } else {
                 this.whosTurn = 1;
             }
+            console.log(`whosTurn = ${this.whosTurn}`);
+            this.emitPlayerData();
         },
         emitPlayerData() {
             this.$emit('get-players', this.players);
@@ -44,3 +46,10 @@ export default {
     },
 }
 </script>
+
+<style scoped>
+button {
+    background-color: aliceblue;
+    color: black;
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
-    <h1>Game Grid</h1>
     <div class="game-grid">
+        <h1>Game Grid</h1>
         <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="row">
             <div v-for="(cell, cellIndex) in row" :key="cellIndex" class="cell">
             </div>
