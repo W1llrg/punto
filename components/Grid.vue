@@ -1,30 +1,41 @@
-
 <template>
   <div class="grid">
-    <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="row">
-      <div
-        v-for="(cell, cellIndex) in row"
-        :key="cellIndex"
-        class="cell"
-        :class="{ active: cell }"
-        @click="toggleCell(rowIndex, cellIndex)"
-      ></div>
+    <div 
+        v-for="(row, rowIndex) in grid" 
+        :key="rowIndex" 
+        class="row"
+    >
+        <div
+            v-for="(cell, cellIndex) in row"
+            :key="cellIndex"
+            class="cell"
+            :class="{ active: cell }"
+            @click="toggleCell(rowIndex, cellIndex)"
+        >{{ grid[rowIndex][cellIndex] }}</div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      grid: Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => false))
+    props: {
+        grid: {
+            type: Array,
+            required: true
+        }
+    },
+    methods: {
+        toggleCell(rowIndex, cellIndex) {
+            if (this.grid[rowIndex][cellIndex] === null) {
+                this.grid[rowIndex][cellIndex] = "I clicked!";
+            } else {
+                this.grid[rowIndex][cellIndex] = "I did it again!";
+            }
+        }
+    },
+    created() {
+        console.log(`grid content: ${this.grid}`)
     }
-  },
-  methods: {
-    toggleCell(rowIndex, cellIndex) {
-      this.grid[rowIndex][cellIndex] = !this.grid[rowIndex][cellIndex]
-    }
-  }
 }
 </script>
 
@@ -47,5 +58,8 @@ export default {
 
 .active {
   background-color: green;
+}
+.inactive {
+  background-color: white;
 }
 </style>
