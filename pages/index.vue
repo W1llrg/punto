@@ -3,6 +3,9 @@
     <div clash="grid">
         <Grid :grid="grid" :deck="deck"/>
     </div>
+    <div class="player-list">
+        <PlayerList :players="players"/>
+    </div>
 </template>
 
 <style scoped>
@@ -15,6 +18,7 @@
 
 <script>
 import { Deck } from '@/composables/useDeckBuilder';
+import { Player } from '@/composables/usePlayer';
 
 export default {
     setup() {
@@ -25,7 +29,13 @@ export default {
         deck.shuffle();
         console.log(`after shuffling: ${deck.toString()}`);
 
-        return { deck };
+
+        const players = [
+            new Player('Player 1'),
+            new Player('Player 2'),
+        ];
+
+        return { deck, players };
     },
     data() {
         return {
