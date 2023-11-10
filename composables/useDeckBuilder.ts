@@ -20,6 +20,10 @@ export class Deck {
         }
     }
 
+    getDeckSize() {
+        return this.cards.length;
+    }
+
     toString() {
         let result = "cards in the deck:\n\n";
         for (let card of this.cards) {

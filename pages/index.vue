@@ -21,6 +21,7 @@ export default {
         const deck = new Deck(['red', 'blue', 'green', 'yellow']);
         const cards = deck.toString();
         console.log(cards);
+        console.log(`there are ${deck.getDeckSize()} cards in the deck`);
     },
     data() {
         return {
