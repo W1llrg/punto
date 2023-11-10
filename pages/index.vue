@@ -1,7 +1,7 @@
 <template>
     <h1 class="main-title" style="text-align: center;">Puntooooooo</h1>
     <div clash="grid">
-        <Grid :grid="grid"/>
+        <Grid :grid="grid" :deck="deck"/>
     </div>
 </template>
 
@@ -19,9 +19,13 @@ import { Deck } from '@/composables/useDeckBuilder';
 export default {
     setup() {
         const deck = new Deck(['red', 'blue', 'green', 'yellow']);
-        const cards = deck.toString();
-        console.log(cards);
         console.log(`there are ${deck.getDeckSize()} cards in the deck`);
+
+        // Shuffle the deck
+        deck.shuffle();
+        console.log(`after shuffling: ${deck.toString()}`);
+
+        return { deck };
     },
     data() {
         return {

@@ -9,7 +9,6 @@
             v-for="(cell, cellIndex) in row"
             :key="cellIndex"
             class="cell"
-            :class="{ active: cell }"
             @click="toggleCell(rowIndex, cellIndex)"
         >{{ grid[rowIndex][cellIndex] }}</div>
     </div>
@@ -22,19 +21,27 @@ export default {
         grid: {
             type: Array,
             required: true
+        },
+        deck: {
+            type: Object,
+            required: true
         }
     },
     methods: {
         toggleCell(rowIndex, cellIndex) {
             if (this.grid[rowIndex][cellIndex] === null) {
-                this.grid[rowIndex][cellIndex] = "I clicked!";
-            } else {
-                this.grid[rowIndex][cellIndex] = "I did it again!";
+                const card = this.deck.pop();
+                if (card === undefined) {
+                    console.log('no more cards in the deck!');
+                } else {
+                    this.grid[rowIndex][cellIndex] = card.getName();
+                }
             }
         }
     },
     created() {
         console.log(`grid content: ${this.grid}`)
+        console.log(`grid deck content:\n\n${this.deck}`)
     }
 }
 </script>

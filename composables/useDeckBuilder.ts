@@ -12,7 +12,6 @@ export class Deck {
 
     createCards() {
         for (let color of this.colors) {
-            console.log(color);
             for (let i = 0; i < this.sizePerColor; i++) {
                 this.cards.push(new Card(`${color}${i}`, color, "sprite"));
                 this.cards.push(new Card(`${color}${i}`, color, "sprite"));
@@ -20,12 +19,25 @@ export class Deck {
         }
     }
 
+    shuffle() {
+        for (let i = this.cards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * i);
+            const temp = this.cards[i];
+            this.cards[i] = this.cards[j];
+            this.cards[j] = temp;
+        }
+    }
+
+    pop() {
+        return this.cards.pop();
+    }
+
     getDeckSize() {
         return this.cards.length;
     }
 
     toString() {
-        let result = "cards in the deck:\n\n";
+        let result = "";
         for (let card of this.cards) {
             result += `${card.name} `;
         }
@@ -42,5 +54,9 @@ class Card {
         this.name = name;
         this.color = color;
         this.sprite = sprite;
+    }
+
+    getName() {
+        return this.name;
     }
 }
