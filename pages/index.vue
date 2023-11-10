@@ -14,7 +14,14 @@
 </style>
 
 <script>
+import { Deck } from '@/composables/useDeckBuilder';
+
 export default {
+    setup() {
+        const deck = new Deck(['red', 'blue', 'green', 'yellow']);
+        const cards = deck.toString();
+        console.log(cards);
+    },
     data() {
         return {
             grid: Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => null))
