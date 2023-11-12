@@ -4,16 +4,18 @@ export class Player {
     name: string;
     deck: Deck;
 
-    constructor(name: string, deck: Deck) {
+    constructor(name: string) {
         this.name = name;
+        this.deck = new Deck([]);
+    }
+
+    setDeck(deck: Deck) {
         this.deck = deck;
     }
 
     playCard() {
         return this.deck.pop();
     }
-
-    // ////////////////////////////////////////////
 
     getName() {
         return this.name;

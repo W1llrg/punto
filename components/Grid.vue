@@ -40,7 +40,6 @@ export default {
         }
     },
     created() {
-        console.log(`grid content: ${this.grid}`)
         console.log(`grid deck content:\n\n${this.deck}`)
     }
 }

@@ -22,24 +22,39 @@ import { Player } from '@/composables/usePlayer';
 
 export default {
     setup() {
-        const deck = new Deck(['red', 'blue', 'green', 'yellow']);
+
+        //create main deck
+        const deck = new Deck(['red', 'blue', 'green', 'yellow'], true);
         console.log(`there are ${deck.getDeckSize()} cards in the deck`);
 
-        // Shuffle the deck
-        deck.shuffle();
-        console.log(`after shuffling: ${deck.toString()}`);
-
-
+        //create players
         const players = [
-            new Player('Player 1'),
-            new Player('Player 2'),
+            new Player('Miguel'),
+            new Player('Juan'),
         ];
+
+        // assign decks to players
+        let subDecks = [];
+        subDecks = deck.split2();
+
+        console.log(subDecks[0].getColors);
+
+        players.forEach(player => {
+            player.setDeck(subDecks.pop());
+        });
+
+        console.log(players[0].toString());
+        console.log(players[1].toString());
+
+        console.log(`${players[0].getName()} has the following cards:\n\n${players[0].getDeck().toString()}`);
+        console.log(`${players[1].getName()} has the following cards:\n\n${players[1].getDeck().toString()}`);
 
         return { deck, players };
     },
     data() {
         return {
-            grid: Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => null))
+            grid: Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => null)),
+            playerCount: 2
         }
     }
 }
