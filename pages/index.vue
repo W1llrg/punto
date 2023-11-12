@@ -41,6 +41,7 @@ export default {
 
         players.forEach(player => {
             player.setDeck(subDecks.pop());
+            player.getDeck().shuffle();
         });
 
         console.log(players[0].toString());
@@ -54,7 +55,6 @@ export default {
     data() {
         return {
             grid: Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => null)),
-            playerCount: 2
         }
     }
 }

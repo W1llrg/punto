@@ -27,16 +27,41 @@ export default {
             required: true
         }
     },
+    data() {
+        return {
+            cardPlaced: false,
+        }
+    },
     methods: {
         toggleCell(rowIndex, cellIndex) {
-            if (this.grid[rowIndex][cellIndex] === null) {
+            if (!this.cardPlaced) {
                 const card = this.deck.pop();
-                if (card === undefined) {
-                    console.log('no more cards in the deck!');
+                this.grid[rowIndex][cellIndex] = card.getName();
+                this.cardPlaced = true;
+            } else {
+                if (this.grid[rowIndex][cellIndex] === null && this.isAdjacentPlaced(rowIndex, cellIndex)) {
+                    const card = this.deck.pop();
+                    if (card === undefined) {
+                        console.log('no more cards in the deck!');
+                    } else {
+                        this.grid[rowIndex][cellIndex] = card.getName();
+                    }
                 } else {
-                    this.grid[rowIndex][cellIndex] = card.getName();
+                    console.log('cannot place card here!');
                 }
             }
+        },
+        isAdjacentPlaced(rowIndex, cellIndex) {
+            for (let i = Math.max(rowIndex - 1, 0); i <= Math.min(rowIndex + 1, this.grid.length - 1); i++) {
+                for (let j = Math.max(cellIndex - 1, 0); j <= Math.min(cellIndex + 1, this.grid[i].length - 1); j++) {
+                    if (i !== rowIndex || j !== cellIndex) {
+                        if (this.grid[i][j] !== null) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
     },
     created() {
