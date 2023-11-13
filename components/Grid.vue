@@ -74,7 +74,7 @@ export default {
 
         /** gets the card of the given player and places it in the grid */
         playCard(p, rowIndex, cellIndex) {
-            console.log(`player ${p} turn!`);
+            console.log(`player ${p.getName()} turn!`);
             const pDeck = p.getDeck();
             if (!this.cardPlaced) {
 
