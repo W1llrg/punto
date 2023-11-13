@@ -8,7 +8,7 @@
         <div
             v-for="(cell, cellIndex) in row"
             :key="cellIndex"
-            class="cell"
+            :class="setClass(rowIndex, cellIndex)"
             @click="toggleCell(rowIndex, cellIndex)"
         >{{ grid[rowIndex][cellIndex] }}</div>
     </div>
@@ -16,6 +16,9 @@
 </template>
 
 <script>
+import { Deck } from '@/composables/useDeckBuilder';
+import { Player } from '@/composables/usePlayer';
+
 export default {
     props: {
         grid: {
@@ -25,18 +28,34 @@ export default {
         deck: {
             type: Object,
             required: true
+        },
+        players: {
+            type: Array,
+            required: true
         }
     },
     data() {
         return {
             cardPlaced: false,
+            playerTurn: null,
+            cardsPlayed: null,
         }
+    },
+    created() {
+        //choose a random player to start
+        this.playerTurn = Math.floor(Math.random() * 2);
+        console.log(`player ${this.playerTurn} starts!`);
+        console.log(`${this.players[this.playerTurn]} starts!`);
+
+        // init cards played
+        this.cardsPlayed = Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => null));
     },
     methods: {
         toggleCell(rowIndex, cellIndex) {
             if (!this.cardPlaced) {
                 const card = this.deck.pop();
                 this.grid[rowIndex][cellIndex] = card.getName();
+                this.cardsPlayed[rowIndex][cellIndex] = card;
                 this.cardPlaced = true;
             } else {
                 if (this.grid[rowIndex][cellIndex] === null && this.isAdjacentPlaced(rowIndex, cellIndex)) {
@@ -45,6 +64,8 @@ export default {
                         console.log('no more cards in the deck!');
                     } else {
                         this.grid[rowIndex][cellIndex] = card.getName();
+                        this.cardsPlayed[rowIndex][cellIndex] = card;
+                        // console.log(`cards placed: ${this.cardsPlayed}`);
                     }
                 } else {
                     console.log('cannot place card here!');
@@ -64,9 +85,31 @@ export default {
             return false;
         }
     },
-    created() {
-        console.log(`grid deck content:\n\n${this.deck}`)
-    }
+    computed: {
+        setClass() {
+            return (rowIndex, cellIndex) => {
+                let classes = ['cell'];
+                const card = this.cardsPlayed[rowIndex][cellIndex];
+                if (card) {
+                    switch (card.getSprite()) {
+                        case 'red':
+                            classes.push('red');
+                            break;
+                        case 'blue':
+                            classes.push('blue');
+                            break;
+                        case 'green':
+                            classes.push('green');
+                            break;
+                        case 'yellow':
+                            classes.push('yellow');
+                            break;
+                    }
+                }
+                return classes.join(' ');
+            };
+        }
+    },
 }
 </script>
 
@@ -82,15 +125,21 @@ export default {
 }
 
 .cell {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border: 1px solid black;
 }
 
-.active {
+.green {
   background-color: green;
 }
-.inactive {
-  background-color: white;
+.red {
+  background-color: red;
+}
+.blue {
+  background-color: blue;
+}
+.yellow {
+  background-color: yellow;
 }
 </style>

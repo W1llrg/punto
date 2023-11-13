@@ -16,8 +16,8 @@ export class Deck {
     createCards() {
         for (let color of this.colors) {
             for (let i = 0; i < this.sizePerColor; i++) {
-                this.cards.push(new Card(`${color}${i}`, color, "sprite"));
-                this.cards.push(new Card(`${color}${i}`, color, "sprite"));
+                this.cards.push(new Card(`${color}${i}`, color, color));
+                this.cards.push(new Card(`${color}${i}`, color, color));
             }
         }
     }

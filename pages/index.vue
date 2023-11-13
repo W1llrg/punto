@@ -1,7 +1,7 @@
 <template>
     <h1 class="main-title" style="text-align: center;">Puntooooooo</h1>
     <div clash="grid">
-        <Grid :grid="grid" :deck="deck"/>
+        <Grid :grid="grid" :deck="deck" :players="players"/>
     </div>
     <div class="player-list">
         <PlayerList :players="players"/>
@@ -36,8 +36,6 @@ export default {
         // assign decks to players
         let subDecks = [];
         subDecks = deck.split2();
-
-        console.log(subDecks[0].getColors);
 
         players.forEach(player => {
             player.setDeck(subDecks.pop());
