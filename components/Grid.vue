@@ -51,10 +51,14 @@ export default {
         this.cardsPlayed = Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => null));
     },
     methods: {
+
+        /** fill the cell with the given card */
         toggleCell(rowIndex, cellIndex) {
             const curPlayer = this.players[this.playerTurn]; 
             this.playCard(curPlayer, rowIndex, cellIndex);
         },
+
+        /** checks is the given cell is adjacent to a cell already filled */
         isAdjacentPlaced(rowIndex, cellIndex) {
             for (let i = Math.max(rowIndex - 1, 0); i <= Math.min(rowIndex + 1, this.grid.length - 1); i++) {
                 for (let j = Math.max(cellIndex - 1, 0); j <= Math.min(cellIndex + 1, this.grid[i].length - 1); j++) {
@@ -67,6 +71,8 @@ export default {
             }
             return false;
         },
+
+        /** gets the card of the given player and places it in the grid */
         playCard(p, rowIndex, cellIndex) {
             console.log(`player ${p} turn!`);
             const pDeck = p.getDeck();
