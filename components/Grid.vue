@@ -52,25 +52,8 @@ export default {
     },
     methods: {
         toggleCell(rowIndex, cellIndex) {
-            if (!this.cardPlaced) {
-                const card = this.deck.pop();
-                this.grid[rowIndex][cellIndex] = card.getName();
-                this.cardsPlayed[rowIndex][cellIndex] = card;
-                this.cardPlaced = true;
-            } else {
-                if (this.grid[rowIndex][cellIndex] === null && this.isAdjacentPlaced(rowIndex, cellIndex)) {
-                    const card = this.deck.pop();
-                    if (card === undefined) {
-                        console.log('no more cards in the deck!');
-                    } else {
-                        this.grid[rowIndex][cellIndex] = card.getName();
-                        this.cardsPlayed[rowIndex][cellIndex] = card;
-                        // console.log(`cards placed: ${this.cardsPlayed}`);
-                    }
-                } else {
-                    console.log('cannot place card here!');
-                }
-            }
+            const curPlayer = this.players[this.playerTurn]; 
+            this.playCard(curPlayer, rowIndex, cellIndex);
         },
         isAdjacentPlaced(rowIndex, cellIndex) {
             for (let i = Math.max(rowIndex - 1, 0); i <= Math.min(rowIndex + 1, this.grid.length - 1); i++) {
@@ -83,6 +66,36 @@ export default {
                 }
             }
             return false;
+        },
+        playCard(p, rowIndex, cellIndex) {
+            console.log(`player ${p} turn!`);
+            const pDeck = p.getDeck();
+            if (!this.cardPlaced) {
+
+                const card = pDeck.pop();
+                this.grid[rowIndex][cellIndex] = card.getName();
+                this.cardsPlayed[rowIndex][cellIndex] = card;
+                this.cardPlaced = true;
+                this.playerTurn = (this.playerTurn + 1) % this.players.length;
+
+            } else {
+
+                if (this.grid[rowIndex][cellIndex] === null && this.isAdjacentPlaced(rowIndex, cellIndex)) {
+                    const card = pDeck.pop();
+                    if (card === undefined) {
+                        console.log('no more cards in the deck!');
+                    } else {
+                        this.grid[rowIndex][cellIndex] = card.getName();
+                        this.cardsPlayed[rowIndex][cellIndex] = card;
+                        // console.log(`cards placed: ${this.cardsPlayed}`);
+                    }
+
+                } else {
+                    console.log('cannot place card here!');
+                }
+                this.playerTurn = (this.playerTurn + 1) % this.players.length;
+
+            }
         }
     },
     computed: {
