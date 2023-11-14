@@ -39,6 +39,9 @@ export default {
             cardPlaced: false,
             playerTurn: null,
             cardsPlayed: null,
+            allowedCells: null,
+            maxRow: [],
+            maxCell: [],
         }
     },
     created() {
@@ -49,6 +52,9 @@ export default {
 
         // init cards played
         this.cardsPlayed = Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => null));
+
+        // init allowedCells
+        this.allowedCells = Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => true));
     },
     methods: {
 
@@ -83,10 +89,12 @@ export default {
                 this.cardsPlayed[rowIndex][cellIndex] = card;
                 this.cardPlaced = true;
                 this.playerTurn = (this.playerTurn + 1) % this.players.length;
+                this.updateBoundaries(rowIndex, cellIndex);
 
             } else {
 
                 if (this.grid[rowIndex][cellIndex] === null && this.isAdjacentPlaced(rowIndex, cellIndex)) {
+                    
                     const card = pDeck.pop();
                     if (card === undefined) {
                         console.log('no more cards in the deck!');
@@ -95,14 +103,46 @@ export default {
                         this.cardsPlayed[rowIndex][cellIndex] = card;
                         // console.log(`cards placed: ${this.cardsPlayed}`);
                     }
+                    this.playerTurn = (this.playerTurn + 1) % this.players.length;
+                    this.updateBoundaries(rowIndex, cellIndex);
 
                 } else {
                     console.log('cannot place card here!');
                 }
-                this.playerTurn = (this.playerTurn + 1) % this.players.length;
 
             }
-        }
+            console.log(`maxRow: ${this.maxRow}\nmaxCell: ${this.maxCell}`);
+        },
+
+        updateBoundaries(rowIndex, cellIndex) {
+            let foundRow = false;
+            let foundCell = false;
+            let maxGridSize = 6;
+            
+            // vertical, rows
+            if (this.maxRow.length < maxGridSize) {
+                this.maxRow.forEach(index => {
+                    if (index === rowIndex) {
+                        foundRow = true;
+                    }
+                });
+                if (!foundRow) {
+                    this.maxRow.push(rowIndex);
+                }
+            }
+            // horizontal, columns/cells
+            if (this.maxCell.length < maxGridSize) {
+                this.maxCell.forEach(index => {
+                    if (index === cellIndex) {
+                        foundCell = true;
+                    }
+                });
+                if (!foundCell) {
+                    this.maxCell.push(cellIndex);
+                }
+            }
+
+        },
     },
     computed: {
         setClass() {
@@ -127,7 +167,7 @@ export default {
                 }
                 return classes.join(' ');
             };
-        }
+        },
     },
 }
 </script>
@@ -160,5 +200,8 @@ export default {
 }
 .yellow {
   background-color: yellow;
+}
+.locked {
+  background-color: grey;
 }
 </style>
