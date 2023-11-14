@@ -129,6 +129,8 @@ export default {
                 if (!foundRow) {
                     this.maxRow.push(rowIndex);
                 }
+            } else {
+                this.updateAllowedCells();
             }
             // horizontal, columns/cells
             if (this.maxCell.length < maxGridSize) {
@@ -140,9 +142,33 @@ export default {
                 if (!foundCell) {
                     this.maxCell.push(cellIndex);
                 }
+            } else {
+                this.updateAllowedCells();
             }
 
         },
+
+        updateAllowedCells(r = false, c = false) {
+            this.allowedCells.forEach((row, rowIndex) => {
+                for (let allowedRow of this.maxRow) {
+                    if (rowIndex !== allowedRow) {
+                        row.forEach((cell, cellIndex) => {
+                            this.allowedCells[rowIndex][cellIndex] = false;
+                        });
+                    }
+                }
+            });
+            this.allowedCells.forEach((row, rowIndex) => {
+                for (let allowedCell of this.maxCell) {
+                    if (rowIndex !== allowedCell) {
+                        row.forEach((cell, cellIndex) => {
+                            this.allowedCells[rowIndex][cellIndex] = false;
+                        });
+                    }
+                }
+            });
+            console.log(`allowedCells: ${this.allowedCells}`);
+        }
     },
     computed: {
         setClass() {
