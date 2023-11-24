@@ -10,7 +10,7 @@
             :key="cellIndex"
             :class="setClass(rowIndex, cellIndex)"
             @click="toggleCell(rowIndex, cellIndex)"
-        >{{ allowedCells[rowIndex][cellIndex] }}</div>
+        >{{ grid[rowIndex][cellIndex] }}</div>
     </div>
   </div>
 </template>
@@ -139,12 +139,8 @@ export default {
             
             this.allowedCells.forEach((row, rowIndex) => {
                 // rows
-                if (r) {
-                    if (!this.maxRow.includes(rowIndex)) {
-                        this.allowedCells[rowIndex].forEach((cell, cellIndex) => {
-                            this.allowedCells[rowIndex][cellIndex] = false;
-                        });
-                    }
+                if (r && !this.maxRow.includes(rowIndex)) {
+                    this.allowedCells[rowIndex].fill(false);
                 }
 
                 // columns
@@ -185,6 +181,9 @@ export default {
                             classes.push('yellow');
                             break;
                     }
+                }
+                if (!this.allowedCells[rowIndex][cellIndex]) {
+                    classes.push('locked');
                 }
                 return classes.join(' ');
             };
