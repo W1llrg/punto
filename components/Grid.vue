@@ -86,14 +86,12 @@ export default {
 
             // first card = center of the grid
             if (!this.cardPlaced && rowIndex === 5 && cellIndex === 5) {
-
                 const card = pDeck.pop();
                 this.grid[rowIndex][cellIndex] = card.getName();
                 this.cardsPlayed[rowIndex][cellIndex] = card;
                 this.cardPlaced = true;
                 this.playerTurn = (this.playerTurn + 1) % this.players.length;
                 this.updateBoundaries(rowIndex, cellIndex);
-
             } else {
 
                 if (this.grid[rowIndex][cellIndex] === null && this.isAdjacentPlaced(rowIndex, cellIndex)) {
@@ -101,24 +99,21 @@ export default {
                         console.log('cannot place card here!');
                         return;
                     }
-                    
+
                     const card = pDeck.pop();
                     if (card === undefined) {
                         console.log('no more cards in the deck!');
                     } else {
                         this.grid[rowIndex][cellIndex] = card.getName();
                         this.cardsPlayed[rowIndex][cellIndex] = card;
-                        // console.log(`cards placed: ${this.cardsPlayed}`);
                     }
+
                     this.playerTurn = (this.playerTurn + 1) % this.players.length;
                     this.updateBoundaries(rowIndex, cellIndex);
-
                 } else {
                     console.log('cannot place card here!');
                 }
-
             }
-            console.log(`maxRow: ${this.maxRow}\nmaxCell: ${this.maxCell}`);
         },
 
         updateBoundaries(rowIndex, cellIndex) {
