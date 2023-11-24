@@ -116,42 +116,21 @@ export default {
         },
 
         updateBoundaries(rowIndex, cellIndex) {
-            let foundRow = false;
-            let foundCell = false;
-            let maxGridSize = 6;
-            
-            console.log(`current allowedCells state: ${this.allowedCells}`);
+            const maxGridSize = 6;
 
             // vertical, rows
-            if (this.maxRow.length < maxGridSize) {
-                this.maxRow.forEach(index => {
-                    if (index === rowIndex) {
-                        foundRow = true;
-                    }
-                });
-                if (!foundRow) {
-                    this.maxRow.push(rowIndex);
-                }
-                console.log(`not updating row`);
-            } 
+            if (this.maxRow.length < maxGridSize && !this.maxRow.includes(rowIndex)) {
+                this.maxRow.push(rowIndex);
+            }
             if (this.maxRow.length >= maxGridSize) {
-                console.log(`updating row`);
                 this.updateAllowedCells(true, false);
             }
+
             // horizontal, columns/cells
-            if (this.maxCell.length < maxGridSize) {
-                this.maxCell.forEach(index => {
-                    if (index === cellIndex) {
-                        foundCell = true;
-                    }
-                });
-                if (!foundCell) {
-                    this.maxCell.push(cellIndex);
-                }
-                console.log(`not updating cell`);
-            } 
+            if (this.maxCell.length < maxGridSize && !this.maxCell.includes(cellIndex)) {
+                this.maxCell.push(cellIndex);
+            }
             if (this.maxCell.length >= maxGridSize) {
-                console.log(`updating cell`);
                 this.updateAllowedCells(false, true);
             }
         },
@@ -159,9 +138,6 @@ export default {
         updateAllowedCells(r = false, c = false) {
             
             this.allowedCells.forEach((row, rowIndex) => {
-                console.log(`currently watching column #${rowIndex}`);
-                console.log(`row values: ${row}`);
-
                 // rows
                 if (r) {
                     if (!this.maxRow.includes(rowIndex)) {
@@ -181,7 +157,6 @@ export default {
                 }
 
             });
-            console.log(`allowedCells: ${this.allowedCells}`);
         },
 
         findMaxColorRow() {
