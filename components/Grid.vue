@@ -133,9 +133,10 @@ export default {
                     this.maxRow.push(rowIndex);
                 }
                 console.log(`not updating row`);
-            } else {
+            } 
+            if (this.maxRow.length >= maxGridSize) {
                 console.log(`updating row`);
-                this.updateAllowedCells();
+                this.updateAllowedCells(true, false);
             }
             // horizontal, columns/cells
             if (this.maxCell.length < maxGridSize) {
@@ -148,11 +149,11 @@ export default {
                     this.maxCell.push(cellIndex);
                 }
                 console.log(`not updating cell`);
-            } else {
+            } 
+            if (this.maxCell.length >= maxGridSize) {
                 console.log(`updating cell`);
-                this.updateAllowedCells();
+                this.updateAllowedCells(false, true);
             }
-
         },
 
         updateAllowedCells(r = false, c = false) {
@@ -160,12 +161,25 @@ export default {
             this.allowedCells.forEach((row, rowIndex) => {
                 console.log(`currently watching column #${rowIndex}`);
                 console.log(`row values: ${row}`);
-                row.forEach((cell, cellIndex) => {
-                    if (!this.maxCell.includes(cellIndex)) {
-                        console.log(`cell #${cellIndex} is in maxCell`);
-                        this.allowedCells[rowIndex][cellIndex] = false;
+
+                // rows
+                if (r) {
+                    if (!this.maxRow.includes(rowIndex)) {
+                        this.allowedCells[rowIndex].forEach((cell, cellIndex) => {
+                            this.allowedCells[rowIndex][cellIndex] = false;
+                        });
                     }
-                });
+                }
+
+                // columns
+                if (c) {
+                    row.forEach((cell, cellIndex) => {
+                        if (!this.maxCell.includes(cellIndex)) {
+                            this.allowedCells[rowIndex][cellIndex] = false;
+                        }
+                    });
+                }
+
             });
             console.log(`allowedCells: ${this.allowedCells}`);
         },
