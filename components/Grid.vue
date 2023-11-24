@@ -83,7 +83,9 @@ export default {
         playCard(p, rowIndex, cellIndex) {
             console.log(`player ${p.getName()} turn!`);
             const pDeck = p.getDeck();
-            if (!this.cardPlaced) {
+
+            // first card = center of the grid
+            if (!this.cardPlaced && rowIndex === 5 && cellIndex === 5) {
 
                 const card = pDeck.pop();
                 this.grid[rowIndex][cellIndex] = card.getName();
@@ -95,6 +97,10 @@ export default {
             } else {
 
                 if (this.grid[rowIndex][cellIndex] === null && this.isAdjacentPlaced(rowIndex, cellIndex)) {
+                    if (this.allowedCells[rowIndex][cellIndex] === false) {
+                        console.log('cannot place card here!');
+                        return;
+                    }
                     
                     const card = pDeck.pop();
                     if (card === undefined) {
@@ -151,7 +157,6 @@ export default {
                         }
                     });
                 }
-
             });
         },
 
