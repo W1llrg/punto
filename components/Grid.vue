@@ -10,7 +10,7 @@
             :key="cellIndex"
             :class="setClass(rowIndex, cellIndex)"
             @click="toggleCell(rowIndex, cellIndex)"
-        >{{ grid[rowIndex][cellIndex] }}</div>
+        >{{ allowedCells[rowIndex][cellIndex] }}</div>
     </div>
   </div>
 </template>
@@ -55,6 +55,7 @@ export default {
 
         // init allowedCells
         this.allowedCells = Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => true));
+        console.log(`initial allowedCells: ${this.allowedCells}`);
     },
     methods: {
 
@@ -119,6 +120,8 @@ export default {
             let foundCell = false;
             let maxGridSize = 6;
             
+            console.log(`current allowedCells state: ${this.allowedCells}`);
+
             // vertical, rows
             if (this.maxRow.length < maxGridSize) {
                 this.maxRow.forEach(index => {
@@ -129,7 +132,9 @@ export default {
                 if (!foundRow) {
                     this.maxRow.push(rowIndex);
                 }
+                console.log(`not updating row`);
             } else {
+                console.log(`updating row`);
                 this.updateAllowedCells();
             }
             // horizontal, columns/cells
@@ -142,33 +147,34 @@ export default {
                 if (!foundCell) {
                     this.maxCell.push(cellIndex);
                 }
+                console.log(`not updating cell`);
             } else {
+                console.log(`updating cell`);
                 this.updateAllowedCells();
             }
 
         },
 
         updateAllowedCells(r = false, c = false) {
+            
             this.allowedCells.forEach((row, rowIndex) => {
-                for (let allowedRow of this.maxRow) {
-                    if (rowIndex !== allowedRow) {
-                        row.forEach((cell, cellIndex) => {
-                            this.allowedCells[rowIndex][cellIndex] = false;
-                        });
+                console.log(`currently watching column #${rowIndex}`);
+                console.log(`row values: ${row}`);
+                row.forEach((cell, cellIndex) => {
+                    if (!this.maxCell.includes(cellIndex)) {
+                        console.log(`cell #${cellIndex} is in maxCell`);
+                        this.allowedCells[rowIndex][cellIndex] = false;
                     }
-                }
-            });
-            this.allowedCells.forEach((row, rowIndex) => {
-                for (let allowedCell of this.maxCell) {
-                    if (rowIndex !== allowedCell) {
-                        row.forEach((cell, cellIndex) => {
-                            this.allowedCells[rowIndex][cellIndex] = false;
-                        });
-                    }
-                }
+                });
             });
             console.log(`allowedCells: ${this.allowedCells}`);
-        }
+        },
+
+        findMaxColorRow() {
+
+            // todo
+
+        },
     },
     computed: {
         setClass() {
