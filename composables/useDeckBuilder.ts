@@ -56,6 +56,10 @@ export class Deck {
         return this.cards.pop();
     }
 
+    getNextCard() {
+        return this.cards[this.cards.length - 1].getName();
+    }
+
     getDeckSize() {
         return this.cards.length;
     }

@@ -42,6 +42,7 @@ export default {
             allowedCells: null,
             maxRow: [],
             maxCell: [],
+            gameWonBy: null,
         }
     },
     created() {
@@ -61,8 +62,13 @@ export default {
 
         /** fill the cell with the given card */
         toggleCell(rowIndex, cellIndex) {
-            const curPlayer = this.players[this.playerTurn]; 
-            this.playCard(curPlayer, rowIndex, cellIndex);
+            if (this.gameWonBy !== null) {
+                console.log(`game won by ${this.gameWonBy}!`);
+                return;
+            } else {
+                const curPlayer = this.players[this.playerTurn]; 
+                this.playCard(curPlayer, rowIndex, cellIndex);
+            }
         },
 
         /** checks is the given cell is adjacent to a cell already filled */
@@ -109,6 +115,7 @@ export default {
                     }
 
                     this.playerTurn = (this.playerTurn + 1) % this.players.length;
+                    console.log(`${this.players[this.playerTurn].getName()}'s next card is '${this.players[this.playerTurn].getDeck().getNextCard()}`);
                     this.updateBoundaries(rowIndex, cellIndex);
                 } else {
                     console.log('cannot place card here!');
@@ -167,6 +174,11 @@ export default {
                 hMax.push(this.horizontalCheck(color));
                 vMax.push(this.verticalCheck(color));
                 // dMax = this.diagonalCheck(color);
+            }
+
+            // assign victory
+            if (hMax.includes(5) || vMax.includes(5) || dMax.includes(5)) {
+                this.gameWonBy = player.getName();
             }
 
             console.log(`hMax: ${hMax}`);
