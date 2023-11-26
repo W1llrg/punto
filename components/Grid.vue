@@ -114,6 +114,7 @@ export default {
                     console.log('cannot place card here!');
                 }
             }
+            this.checkVictory(p);
         },
 
         updateBoundaries(rowIndex, cellIndex) {
@@ -155,10 +156,73 @@ export default {
             });
         },
 
-        findMaxColorRow() {
+        checkVictory(player) {
 
-            // todo
+            const pColors = player.getDeck().getColors();
+            let hMax = [];
+            let vMax = [];
+            let dMax = [];
+            
+            for (let color of pColors) {
+                hMax.push(this.horizontalCheck(color));
+                // vMax = this.verticalCheck(color);
+                // dMax = this.diagonalCheck(color);
+            }
 
+            console.log(`hMax: ${hMax}`);
+
+        },
+
+        /**
+         * find the max color streak in each row
+         * @param {*} color the color to check for
+         * @returns the max streak of the given color
+         */
+        horizontalCheck(color) {
+
+            let streaks = [];   // stores the max streak of each row
+
+            // iterate over each row
+            this.cardsPlayed.forEach((row, rowIndex) => {
+                let streak = [];
+                // iterate over each cell of given row
+                row.forEach((cell, cellIndex) => {
+
+                    if (cell !== null && cell.getColor() === color) {
+
+                        if (streak.length === 0) {
+                            streak.push(cell);
+                        } else {
+                            if (streak[streak.length - 1].getColor() === color) {
+                                streak.push(cell);
+                            } else {
+                                streak = [];
+                            }
+                        }
+
+                    }
+                });
+                // store the max streak of the row
+                streaks.push(streak);
+            });
+
+            // find the max streak of all rows
+            let max = 0;
+            streaks.forEach(streak => {
+                if (streak.length > max) {
+                    max = streak.length;
+                }
+            });
+
+            return max;        
+        },
+
+        verticalCheck(color) {
+
+        },
+
+        diagonalCheck(color) {
+            console.log(`not implemented yet!`);
         },
     },
     computed: {
