@@ -195,14 +195,15 @@ export default {
                         } else {
                             if (streak[streak.length - 1].getColor() === color) {
                                 streak.push(cell);
-                            } else {
-                                streak = [];
                             }
                         }
 
+                    } else {
+                        // store the max streak of the row
+                        streaks.push(streak);
+                        streak = [];
                     }
                 });
-                // store the max streak of the row
                 streaks.push(streak);
             });
 
@@ -219,6 +220,42 @@ export default {
 
         verticalCheck(color) {
 
+            let streaks = [];   // stores the max streak of each column
+            
+            // iterate over each column
+            for (let column = 0; row < this.cardsPlayed[0].length; row++) {
+                let streak = [];
+
+                // iterate over each cell of given column
+                for (let row = 0; row < this.cardsPlayed.length; row++) {
+                    const cell = this.cardsPlayed[row][column];
+                    if (cell !== null && cell.getColor() === color) {
+
+                        if (streak.length === 0) {
+                            streak.push(cell);
+                        } else {
+                            if (streak[streak.length - 1].getColor() === color) {
+                                streak.push(cell);
+                            } else {
+                                streak = [];
+                                streak.push(cell);
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
+            // find the max streak of all columns
+            let max = 0;
+            streaks.forEach(streak => {
+                if (streak.length > max) {
+                    max = streak.length;
+                }
+            });
+
+            return max;
         },
 
         diagonalCheck(color) {
