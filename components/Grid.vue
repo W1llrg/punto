@@ -165,11 +165,12 @@ export default {
             
             for (let color of pColors) {
                 hMax.push(this.horizontalCheck(color));
-                // vMax = this.verticalCheck(color);
+                vMax.push(this.verticalCheck(color));
                 // dMax = this.diagonalCheck(color);
             }
 
             console.log(`hMax: ${hMax}`);
+            console.log(`vMax: ${vMax}`);
 
         },
 
@@ -223,25 +224,26 @@ export default {
             let streaks = [];   // stores the max streak of each column
             
             // iterate over each column
-            for (let column = 0; row < this.cardsPlayed[0].length; row++) {
+            for (let column = 0; column < this.cardsPlayed[0].length; column++) {
                 let streak = [];
 
                 // iterate over each cell of given column
                 for (let row = 0; row < this.cardsPlayed.length; row++) {
                     const cell = this.cardsPlayed[row][column];
                     if (cell !== null && cell.getColor() === color) {
-
-                        if (streak.length === 0) {
-                            streak.push(cell);
-                        } else {
-                            if (streak[streak.length - 1].getColor() === color) {
+                            
+                            if (streak.length === 0) {
                                 streak.push(cell);
                             } else {
-                                streak = [];
-                                streak.push(cell);
+                                if (streak[streak.length - 1].getColor() === color) {
+                                    streak.push(cell);
+                                }
                             }
-                        }
 
+                    } else {
+                        // store the max streak of the column
+                        streaks.push(streak);
+                        streak = [];
                     }
                 }
 
