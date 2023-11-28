@@ -16,8 +16,8 @@ export class Deck {
     createCards() {
         for (let color of this.colors) {
             for (let i = 0; i < this.sizePerColor; i++) {
-                this.cards.push(new Card(`${color}${i}`, color, "sprite"));
-                this.cards.push(new Card(`${color}${i}`, color, "sprite"));
+                this.cards.push(new Card(`${color}${i}`, color, color));
+                this.cards.push(new Card(`${color}${i}`, color, color));
             }
         }
     }
@@ -54,6 +54,10 @@ export class Deck {
     /** returns the top card of the deck */
     pop() {
         return this.cards.pop();
+    }
+
+    getNextCard() {
+        return this.cards[this.cards.length - 1].getName();
     }
 
     getDeckSize() {
