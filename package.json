@@ -19,6 +19,7 @@
   "dependencies": {
     "@types/node": "^20.9.4",
     "mysql2": "^3.6.5",
+    "nuxt-mongoose": "^1.0.3",
     "safer-buffer": "^2.1.2",
     "sqlite3": "^5.1.6"
   }
