@@ -23,8 +23,6 @@ import { Player } from '@/composables/usePlayer';
 export default {
     setup() {
 
-        // connect to db and test
-        useDatabase();
         //create main deck
         const deck = new Deck(['red', 'blue', 'green', 'yellow'], true);
         console.log(`there are ${deck.getDeckSize()} cards in the deck`);
