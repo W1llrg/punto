@@ -28,3 +28,37 @@ const app = express();
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(express.static('public'));
+
+
+// ROUTES
+// /////////////////////////////////////////////////
+
+/* test to check for the server */
+app.get('/api', async (req, res) => {
+    res.json({ message: 'Hello from server!' });
+});
+
+/* add the game to the db */
+app.post('/mysql/start-game', async (req, res) => {
+    // TODO
+});
+
+/* register moves */
+app.post('/mysql/register-move', async (req, res) => {
+    // TODO
+});
+
+/* register winner */
+app.post('/mysql/set-winner', async (req, res) => {
+    // TODO
+});
+
+
+// PORT
+// /////////////////////////////////////////////////
+
+const port = process.env.PORT + 1 || 3001;
+app.listen(port, () => {
+    console.log(`>> >> Server listening on port ${port}`);
+});
