@@ -18,6 +18,7 @@
 <script>
 import { Deck } from '@/composables/useDeckBuilder';
 import { Player } from '@/composables/usePlayer';
+import axios from 'axios';
 
 export default {
     props: {
@@ -46,6 +47,10 @@ export default {
         }
     },
     created() {
+
+        // test insert into db
+        axios.post(`http://localhost:3001/mysql/start-game`);
+
         //choose a random player to start
         this.playerTurn = Math.floor(Math.random() * 2);
         console.log(`player ${this.playerTurn} starts!`);
