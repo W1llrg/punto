@@ -1,60 +1,48 @@
 <template>
     <h1 class="main-title" style="text-align: center;">Puntooooooo</h1>
-    <div clash="grid">
-        <Grid :grid="grid" :deck="deck" :players="players"/>
+    <div class="desc">
+        <p>
+            Bienvenue sur le jeu du Punto!<br>
+            Entrez vos noms puis cliquez sur jouer!
+        </p>
     </div>
-    <div class="player-list">
-        <PlayerList :players="players"/>
+
+    <div class="input-field">
+        <label for="playerName1">Nom du joueur 1:</label>
+        <input type="text" id="playerName1" placeholder="Entrez votre nom">
     </div>
+
+    <div class="input-field">
+        <label for="playerName2">Nom du joueur 2:</label>
+        <input type="text" id="playerName2" placeholder="Entrez votre nom">
+    </div>
+
+    <button @click="startGame">Jouer</button>
 </template>
 
 <style scoped>
-    .grid {
-        display: flex;
-        flex-wrap: wrap;
-        align-content: center;
+    .desc {
+        text-align: center;
     }
 </style>
 
 <script>
-import { Deck } from '@/composables/useDeckBuilder';
-import { Player } from '@/composables/usePlayer';
+    export default {
+        methods: {
+            startGame() {
+                const p1 = document.getElementById('playerName1').value;
+                const p2 = document.getElementById('playerName2').value;
+                console.log(this.p1);
+                console.log(this.p2);
 
-export default {
-    setup() {
-
-        //create main deck
-        const deck = new Deck(['red', 'blue', 'green', 'yellow'], true);
-        console.log(`there are ${deck.getDeckSize()} cards in the deck`);
-
-        //create players
-        const players = [
-            new Player('Miguel'),
-            new Player('Juan'),
-        ];
-
-        // assign decks to players
-        let subDecks = [];
-        subDecks = deck.split2();
-
-        players.forEach(player => {
-            player.setDeck(subDecks.pop());
-            player.getDeck().shuffle();
-        });
-
-        console.log(players[0].toString());
-        console.log(players[1].toString());
-
-        console.log(`${players[0].getName()} has the following cards:\n\n${players[0].getDeck().toString()}`);
-        console.log(`${players[1].getName()} has the following cards:\n\n${players[1].getDeck().toString()}`);
-
-        return { deck, players };
-    },
-    data() {
-        return {
-            grid: Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => null)),
+                this.$router.push({
+                    name: 'game',
+                    query: {
+                        p1: p1,
+                        p2: p2,
+                    }
+                });
+            }
         }
     }
-}
 </script>
-
