@@ -1,5 +1,7 @@
 import express from 'express';
 import mysql from 'mysql2/promise';
+import sqlite3 from 'sqlite3';
+import { open } from 'sqlite';
 import morgan from 'morgan';
 import cors from 'cors';
 
@@ -15,10 +17,27 @@ mysql.createConnection({
     database: 'punto',
 }).then(conn => {
     connection = conn;
-    console.log('Database connection established');
+    console.log('>> MYSQL: Database connection established');
 }).catch(err => {
-    console.error('Database connection failed: ' + err);
+    console.error('>> MYSQL: Database connection failed: ' + err);
 });
+
+
+// SQLITE DATABASE CONNECTION
+// /////////////////////////////////////////////////
+
+let sqliteConn;
+open({
+    filename: 'server/db/punto.sqlite',
+    driver: sqlite3.Database
+}).then((db) => {
+    sqliteConn = db;
+    if (sqliteConn) {
+        console.log('>> SQLITE: Database connection established');
+    } else {
+        console.error('>> SQLITE: Database connection failed');
+    }
+})
 
 
 // EXPRESS SERVER
