@@ -1,4 +1,7 @@
 
+/**
+ * creates a deck of Punto with the default game rules
+ */
 export class Deck {
     colors: string[];
     cards: Card[];
@@ -56,18 +59,22 @@ export class Deck {
         return this.cards.pop();
     }
 
+    /** returns the name of the next card available in the deck */
     getNextCard() {
         return this.cards[this.cards.length - 1].getName();
     }
 
+    /** returns the value of the next card available in the deck */
     getNextCardValue() {
         return this.cards[this.cards.length - 1].getValue();
     }
 
+    /** returns the size of the deck */
     getDeckSize() {
         return this.cards.length;
     }
 
+    /** returns the colors of the deck */
     getColors() {
         return this.colors;
     }
@@ -81,6 +88,9 @@ export class Deck {
     }
 }
 
+/**
+ * creates a Punto card
+ */
 class Card {
     name: string;
     color: string;
@@ -92,14 +102,17 @@ class Card {
         this.value = value;
     }
 
+    /** returns the name of the card */
     getName() {
         return this.name;
     }
 
+    /** returns the color of the card */
     getColor() {
         return this.color;
     }
 
+    /** returns the value of the card */
     getValue() {
         return this.value;
     }
