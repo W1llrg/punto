@@ -1,75 +1,82 @@
-# Nuxt 3 Minimal Starter
+# Guide d'installation
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Prérequis
 
-## Setup
+- [Node.js](https://nodejs.org/en/)
+- [Yarn](https://yarnpkg.com/)
+- [MySQL](https://www.mysql.com/fr/)
+- [Sqlite](https://www.sqlite.org/index.html)
+- [Docker](https://www.docker.com/)
 
-Make sure to install the dependencies:
+## Installation
+
+Cloner le projet, puis suivre les étapes suivantes :
+
+### 1. Installation des dépendances
 
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
 yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+### 2. Mise en place de MySQL
 
-Start the development server on `http://localhost:3000`:
+Il faut d'abord créer une base de données MySQL en local nommée `punto`. Il faut ensuite créer un utilisateur
+`puntoadmin`. Toutes les informations sont renseignées dans le script de création de table disponible au chemin
+`./databases/mysql/table_creation_script.sql`.
+
+Une fois la base créée, il faut lancer le script de création de table.
+
+### 3. Mise en place de Sqlite
+
+Il faut créer une base de données dans le répertoire `./server/db` nommée `punto.sqlite` si elle n'existe pas déjà.
+Il faut ensuite exécuter le script de création de table disponible au chemin `./databases/sqlite/table_creation_script.sql` avec l'outil de votre choix.
+
+La base est normalement déjà générée avec des données dedans.
+
+### 4. Mise en place de MongoDB
+
+Il faut récupérer l'image officielle de MongoDB sur Docker Hub :
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+docker pull mongo:latest
 ```
 
-## Production
-
-Build the application for production:
+Il faut ensuite lancer le conteneur :
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+docker run -d -p 27017:27017 --name punto-mongo mongo:latest
 ```
 
-Locally preview production build:
+Il faut maintenant mettre en place la base de données à l'intérieur du conteneur. Pour cela, se connecter au conteneur :
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+docker exec -it punto-mongo mongosh
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Il faut ensuite créer la base de données `punto` :
+
+```bash
+use punto
+```
+
+L'ORM se chargera de créer les collections et les documents nécessaires lors de l'exécution du code.
+
+### 5. Lancement de l'application et du serveur
+
+Pour démarrer l'application, il suffit de lancer la commande suivante :
+
+```bash
+yarn run dev
+```
+
+L'application est maintenant accessible à l'adresse `http://localhost:3000`.
+La commande se chargera de démarrer le serveur et de lancer l'application, pas besoin de lancer les deux séparément.
+
+Vérifier dans le terminal que le serveur a bien réussi à se connecter aux trois base de données.
+Il devrait retourner les messages suivants :
+
+```bash
+>> MYSQL: Database connection established
+>> SQLITE: Database connection established
+>> MONGO: Database connection established
+```
