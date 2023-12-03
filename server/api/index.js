@@ -40,10 +40,10 @@ mongoose.connect(`mongodb://0.0.0.0:27017/punto`, {
     useUnifiedTopology: true
 });
 mongoose.connection.on('connected', () => {
-    console.log('>> MONGO: Connected to MongoDB database');
+    console.log('>> MONGO: Database connection established');
 });
 mongoose.connection.on('error', (err) => {
-    console.error('>> MONGO: Error connecting to MongoDB database: ', err);
+    console.error('>> MONGO: Database connection failed: ', err);
 });
 
 
