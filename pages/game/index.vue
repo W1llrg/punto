@@ -63,6 +63,12 @@ export default {
             p2: players[1].getName(),
         });
 
+        // mongo
+        // axios.post(`http://localhost:3001/mongo/start-game`, {
+        //     p1: players[0].getName(),
+        //     p2: players[1].getName(),
+        // });
+
         // console.log(players[0].toString());
         // console.log(players[1].toString());
 

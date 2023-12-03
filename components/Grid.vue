@@ -86,6 +86,13 @@ export default {
                     player: curPlayer.getName(),
                     value: this.cardsPlayed[rowIndex][cellIndex].getValue(),
                 });
+
+                // mongo
+                // axios.post(`http://localhost:3001/mongo/register-move`, {
+                //     name: moveName,
+                //     player: curPlayer.getName(),
+                //     value: this.cardsPlayed[rowIndex][cellIndex].getValue(),
+                // });
             }
         },
 
@@ -229,6 +236,9 @@ export default {
 
                 // mysql
                 axios.post(`http://localhost:3001/mysql/set-winner/${this.gameWonBy}`);
+
+                // mongo
+                // axios.post(`http://localhost:3001/mongo/set-winner/${this.gameWonBy}`);
             }
         },
 

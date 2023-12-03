@@ -6,7 +6,5 @@ const GameSchema = new mongoose.Schema({
         required: true 
     },
 });
-
 const Game = mongoose.model('Game', GameSchema);
-
-module.exports = Game;
+export default Game;
