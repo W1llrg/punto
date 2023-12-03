@@ -139,20 +139,7 @@ app.post('/mysql/set-winner/:winner', async (req, res) => {
 
 /* add the game to the db */
 app.post('/sqlite/start-game', async (req, res) => {
-    const query = 'INSERT INTO Game (datePlayed) VALUES (?)';
-    const currentDate = new Date();
-    const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-    connection.query(query, [formattedDate], (err, results) => {
-        if (err) {
-            console.log(err);
-            res.json({ message: 'Error' });
-
-            return;
-        }
-        console.log('Game added to the database: ' + results);
-        res.status(200).json({ message: 'Game added to the database' }).end();
-    });
-
+    
 });
 
 /* register moves */

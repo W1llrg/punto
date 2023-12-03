@@ -47,21 +47,17 @@ export default {
         }
     },
     created() {
-
-        // test insert into db
-        axios.post(`http://localhost:3001/mysql/start-game`);
-
         //choose a random player to start
         this.playerTurn = Math.floor(Math.random() * 2);
-        console.log(`player ${this.playerTurn} starts!`);
-        console.log(`${this.players[this.playerTurn]} starts!`);
+        console.log(`${this.players[this.playerTurn].getName()} starts!`);
+        console.log(`${this.players[this.playerTurn].getName()}'s next card is '${this.players[this.playerTurn].getDeck().getNextCard()}'`);
 
         // init cards played
         this.cardsPlayed = Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => null));
 
         // init allowedCells
         this.allowedCells = Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => true));
-        console.log(`initial allowedCells: ${this.allowedCells}`);
+        // console.log(`initial allowedCells: ${this.allowedCells}`);
     },
     methods: {
 
@@ -92,7 +88,6 @@ export default {
 
         /** gets the card of the given player and places it in the grid */
         playCard(p, rowIndex, cellIndex) {
-            console.log(`player ${p.getName()} turn!`);
             const pDeck = p.getDeck();
 
             // first card = center of the grid
@@ -102,6 +97,8 @@ export default {
                 this.cardsPlayed[rowIndex][cellIndex] = card;
                 this.cardPlaced = true;
                 this.playerTurn = (this.playerTurn + 1) % this.players.length;
+                console.log(`${this.players[this.playerTurn].getName()} turn!`);
+                console.log(`${this.players[this.playerTurn].getName()}'s next card is '${this.players[this.playerTurn].getDeck().getNextCard()}`);
                 this.updateBoundaries(rowIndex, cellIndex);
             } else {
 
@@ -120,6 +117,7 @@ export default {
                     }
 
                     this.playerTurn = (this.playerTurn + 1) % this.players.length;
+                    console.log(`${this.players[this.playerTurn].getName()} turn!`);
                     console.log(`${this.players[this.playerTurn].getName()}'s next card is '${this.players[this.playerTurn].getDeck().getNextCard()}`);
                     this.updateBoundaries(rowIndex, cellIndex);
                 } else if (this.grid[rowIndex][cellIndex] !== null && this.isAdjacentPlaced(rowIndex, cellIndex)) {
@@ -138,6 +136,7 @@ export default {
                         }
 
                         this.playerTurn = (this.playerTurn + 1) % this.players.length;
+                        console.log(`${this.players[this.playerTurn].getName()} turn!`);
                         console.log(`${this.players[this.playerTurn].getName()}'s next card is '${this.players[this.playerTurn].getDeck().getNextCard()}`);
                         this.updateBoundaries(rowIndex, cellIndex);
                     } else {
@@ -205,11 +204,8 @@ export default {
             // assign victory
             if (hMax.includes(5) || vMax.includes(5) || dMax.includes(5)) {
                 this.gameWonBy = player.getName();
+                console.log(`game won by ${this.gameWonBy}!`);
             }
-
-            console.log(`hMax: ${hMax}`);
-            console.log(`vMax: ${vMax}`);
-
         },
 
         /**
