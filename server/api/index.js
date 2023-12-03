@@ -171,6 +171,47 @@ app.post('/mysql/set-winner/:winner', async (req, res) => {
     }
 });
 
+app.get('/mysql/get-games', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                g.id, 
+                g.datePlayed, 
+                p1.name AS p1, 
+                p2.name AS p2, 
+                w.name AS winner 
+            FROM Game g 
+            JOIN PlayerGame pg1 ON g.id = pg1.game_id 
+            JOIN PlayerGame pg2 ON g.id = pg2.game_id 
+            JOIN Player p1 ON pg1.player_id = p1.id 
+            JOIN Player p2 ON pg2.player_id = p2.id 
+            JOIN Winner w ON g.id = w.game_id
+        `;
+        const [games] = await connection.execute(query);
+        res.status(200).json({ games }).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error' }).end();
+    }
+});
+
+app.delete('/mysql/empty-base', async (req, res) => {
+    try {
+        const query = `
+            DELETE FROM Game;
+            DELETE FROM Player;
+            DELETE FROM PlayerGame;
+            DELETE FROM Winner;
+            DELETE FROM Moves;
+        `;
+        await connection.execute(query);
+        res.status(200).json({ message: 'Base emptied' }).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error' }).end();
+    }
+});
+
 
 // SQLITE ROUTES
 // /////////////////////////////////////////////////
@@ -258,6 +299,46 @@ app.post('/sqlite/set-winner/:winner', async (req, res) => {
     }
 });
 
+app.get('/sqlite/get-games', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                g.id, 
+                g.datePlayed, 
+                p1.name AS p1, 
+                p2.name AS p2, 
+                w.name AS winner 
+            FROM Game g 
+            JOIN PlayerGame pg1 ON g.id = pg1.game_id 
+            JOIN PlayerGame pg2 ON g.id = pg2.game_id 
+            JOIN Player p1 ON pg1.player_id = p1.id 
+            JOIN Player p2 ON pg2.player_id = p2.id 
+            JOIN Winner w ON g.id = w.game_id
+        `;
+        const games = await sqliteConn.all(query);
+        res.status(200).json({ games }).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error' }).end();
+    }
+});
+
+app.delete('/sqlite/empty-base', async (req, res) => {
+    try {
+        const query = `
+            DELETE FROM Game;
+            DELETE FROM Player;
+            DELETE FROM PlayerGame;
+            DELETE FROM Winner;
+            DELETE FROM Moves;
+        `;
+        await sqliteConn.exec(query);
+        res.status(200).json({ message: 'Base emptied' }).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error' }).end();
+    }
+});
 
 // MONGODB ROUTES
 // /////////////////////////////////////////////////
