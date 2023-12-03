@@ -18,6 +18,7 @@
 <script>
 import { Deck } from '@/composables/useDeckBuilder';
 import { Player } from '@/composables/usePlayer';
+import axios from 'axios';
 
 export default {
     props: {
@@ -48,15 +49,15 @@ export default {
     created() {
         //choose a random player to start
         this.playerTurn = Math.floor(Math.random() * 2);
-        console.log(`player ${this.playerTurn} starts!`);
-        console.log(`${this.players[this.playerTurn]} starts!`);
+        console.log(`${this.players[this.playerTurn].getName()} starts!`);
+        console.log(`${this.players[this.playerTurn].getName()}'s next card is '${this.players[this.playerTurn].getDeck().getNextCard()}'`);
 
         // init cards played
         this.cardsPlayed = Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => null));
 
         // init allowedCells
         this.allowedCells = Array.from({ length: 11 }, () => Array.from({ length: 11 }, () => true));
-        console.log(`initial allowedCells: ${this.allowedCells}`);
+        // console.log(`initial allowedCells: ${this.allowedCells}`);
     },
     methods: {
 
@@ -68,6 +69,30 @@ export default {
             } else {
                 const curPlayer = this.players[this.playerTurn]; 
                 this.playCard(curPlayer, rowIndex, cellIndex);
+
+                // database move insertion
+                const moveName = `r${rowIndex}c${cellIndex}`;
+
+                // sqlite
+                axios.post(`http://localhost:3001/sqlite/register-move`, {
+                    name: moveName,
+                    player: curPlayer.getName(),
+                    value: this.cardsPlayed[rowIndex][cellIndex].getValue(),
+                });
+
+                // mysql
+                axios.post(`http://localhost:3001/mysql/register-move`, {
+                    name: moveName,
+                    player: curPlayer.getName(),
+                    value: this.cardsPlayed[rowIndex][cellIndex].getValue(),
+                });
+
+                // mongo
+                // axios.post(`http://localhost:3001/mongo/register-move`, {
+                //     name: moveName,
+                //     player: curPlayer.getName(),
+                //     value: this.cardsPlayed[rowIndex][cellIndex].getValue(),
+                // });
             }
         },
 
@@ -87,7 +112,6 @@ export default {
 
         /** gets the card of the given player and places it in the grid */
         playCard(p, rowIndex, cellIndex) {
-            console.log(`player ${p.getName()} turn!`);
             const pDeck = p.getDeck();
 
             // first card = center of the grid
@@ -97,6 +121,8 @@ export default {
                 this.cardsPlayed[rowIndex][cellIndex] = card;
                 this.cardPlaced = true;
                 this.playerTurn = (this.playerTurn + 1) % this.players.length;
+                console.log(`${this.players[this.playerTurn].getName()} turn!`);
+                console.log(`${this.players[this.playerTurn].getName()}'s next card is '${this.players[this.playerTurn].getDeck().getNextCard()}`);
                 this.updateBoundaries(rowIndex, cellIndex);
             } else {
 
@@ -115,8 +141,31 @@ export default {
                     }
 
                     this.playerTurn = (this.playerTurn + 1) % this.players.length;
+                    console.log(`${this.players[this.playerTurn].getName()} turn!`);
                     console.log(`${this.players[this.playerTurn].getName()}'s next card is '${this.players[this.playerTurn].getDeck().getNextCard()}`);
                     this.updateBoundaries(rowIndex, cellIndex);
+                } else if (this.grid[rowIndex][cellIndex] !== null && this.isAdjacentPlaced(rowIndex, cellIndex)) {
+                    if (this.allowedCells[rowIndex][cellIndex] === false) {
+                        console.log('cannot place card here!');
+                        return;
+                    }
+
+                    if (pDeck.getNextCardValue() > this.cardsPlayed[rowIndex][cellIndex].getValue()) {
+                        const card = pDeck.pop();
+                        if (card === undefined) {
+                            console.log('no more cards in the deck!');
+                        } else {
+                            this.grid[rowIndex][cellIndex] = card.getName();
+                            this.cardsPlayed[rowIndex][cellIndex] = card;
+                        }
+
+                        this.playerTurn = (this.playerTurn + 1) % this.players.length;
+                        console.log(`${this.players[this.playerTurn].getName()} turn!`);
+                        console.log(`${this.players[this.playerTurn].getName()}'s next card is '${this.players[this.playerTurn].getDeck().getNextCard()}`);
+                        this.updateBoundaries(rowIndex, cellIndex);
+                    } else {
+                        console.log('Value of card is too low!');
+                    }
                 } else {
                     console.log('cannot place card here!');
                 }
@@ -179,11 +228,18 @@ export default {
             // assign victory
             if (hMax.includes(5) || vMax.includes(5) || dMax.includes(5)) {
                 this.gameWonBy = player.getName();
+                console.log(`game won by ${this.gameWonBy}!`);
+
+                // database game end
+                // sqlite
+                axios.post(`http://localhost:3001/sqlite/set-winner/${this.gameWonBy}`);
+
+                // mysql
+                axios.post(`http://localhost:3001/mysql/set-winner/${this.gameWonBy}`);
+
+                // mongo
+                // axios.post(`http://localhost:3001/mongo/set-winner/${this.gameWonBy}`);
             }
-
-            console.log(`hMax: ${hMax}`);
-            console.log(`vMax: ${vMax}`);
-
         },
 
         /**
@@ -282,7 +338,7 @@ export default {
                 let classes = ['cell'];
                 const card = this.cardsPlayed[rowIndex][cellIndex];
                 if (card) {
-                    switch (card.getSprite()) {
+                    switch (card.getColor()) {
                         case 'red':
                             classes.push('red');
                             break;
