@@ -19,6 +19,7 @@
 <script>
 import { Deck } from '@/composables/useDeckBuilder';
 import { Player } from '@/composables/usePlayer';
+import axios from 'axios';
 
 export default {
     data() {
@@ -47,6 +48,12 @@ export default {
         players.forEach(player => {
             player.setDeck(subDecks.pop());
             player.getDeck().shuffle();
+        });
+
+        // insertion into db
+        axios.post(`http://localhost:3001/sqlite/start-game`, {
+            p1: players[0].getName(),
+            p2: players[1].getName(),
         });
 
         // console.log(players[0].toString());

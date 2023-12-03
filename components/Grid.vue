@@ -69,6 +69,14 @@ export default {
             } else {
                 const curPlayer = this.players[this.playerTurn]; 
                 this.playCard(curPlayer, rowIndex, cellIndex);
+
+                // database move insertion
+                const moveName = `r${rowIndex}c${cellIndex}`;
+                axios.post(`http://localhost:3001/sqlite/register-move`, {
+                    name: moveName,
+                    player: curPlayer.getName(),
+                    value: this.cardsPlayed[rowIndex][cellIndex].getValue(),
+                });
             }
         },
 
