@@ -72,7 +72,16 @@ export default {
 
                 // database move insertion
                 const moveName = `r${rowIndex}c${cellIndex}`;
+
+                // sqlite
                 axios.post(`http://localhost:3001/sqlite/register-move`, {
+                    name: moveName,
+                    player: curPlayer.getName(),
+                    value: this.cardsPlayed[rowIndex][cellIndex].getValue(),
+                });
+
+                // mysql
+                axios.post(`http://localhost:3001/mysql/register-move`, {
                     name: moveName,
                     player: curPlayer.getName(),
                     value: this.cardsPlayed[rowIndex][cellIndex].getValue(),
@@ -215,7 +224,11 @@ export default {
                 console.log(`game won by ${this.gameWonBy}!`);
 
                 // database game end
+                // sqlite
                 axios.post(`http://localhost:3001/sqlite/set-winner/${this.gameWonBy}`);
+
+                // mysql
+                axios.post(`http://localhost:3001/mysql/set-winner/${this.gameWonBy}`);
             }
         },
 

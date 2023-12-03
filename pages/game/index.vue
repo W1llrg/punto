@@ -51,7 +51,14 @@ export default {
         });
 
         // insertion into db
+        //sqlite
         axios.post(`http://localhost:3001/sqlite/start-game`, {
+            p1: players[0].getName(),
+            p2: players[1].getName(),
+        });
+
+        //mysql
+        axios.post(`http://localhost:3001/mysql/start-game`, {
             p1: players[0].getName(),
             p2: players[1].getName(),
         });
