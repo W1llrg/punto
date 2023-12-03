@@ -22,5 +22,5 @@ const MovesSchema = new mongoose.Schema({
 });
 
 const Moves = mongoose.model('Moves', MovesSchema);
+export default Moves;
 
-module.exports = Moves;

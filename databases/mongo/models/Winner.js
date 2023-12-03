@@ -14,5 +14,4 @@ const WinnerSchema = new mongoose.Schema({
 });
 
 const Winner = mongoose.model('Winner', WinnerSchema);
-
-module.exports = Winner;
+export default Winner;
