@@ -2,6 +2,7 @@ import express from 'express';
 import mysql from 'mysql2/promise';
 import morgan from 'morgan';
 import cors from 'cors';
+import mongoose from 'mongoose';
 
 
 // MYSQL DATABASE CONNECTION
@@ -18,6 +19,29 @@ mysql.createConnection({
     console.log('Database connection established');
 }).catch(err => {
     console.error('Database connection failed: ' + err);
+});
+
+
+// MONGODB DATABASE CONNECTION
+// /////////////////////////////////////////////////
+
+// import models
+import Game from '../../databases/mongo/models/Game.js';
+import Player from '../../databases/mongo/models/Player.js';
+import Winner from '../../databases/mongo/models/Winner.js';
+import Moves from '../../databases/mongo/models/Moves.js';
+import PlayerGame from '../../databases/mongo/models/PlayerGame.js';
+
+// connect to database
+mongoose.connect(`mongodb://0.0.0.0:27017/punto`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+mongoose.connection.on('connected', () => {
+    console.log('>> MONGO: Connected to MongoDB database');
+});
+mongoose.connection.on('error', (err) => {
+    console.error('>> MONGO: Error connecting to MongoDB database: ', err);
 });
 
 
@@ -60,6 +84,7 @@ app.post('/mysql/start-game', async (req, res) => {
     });
 
 });
+
 
 /* register moves */
 app.post('/mysql/register-move', async (req, res) => {
