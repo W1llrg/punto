@@ -88,49 +88,87 @@ app.get('/api', async (req, res) => {
 
 /* add the game to the db */
 app.post('/mysql/start-game', async (req, res) => {
-    const query = 'INSERT INTO Game (datePlayed) VALUES (?)';
-    const currentDate = new Date();
-    const formattedDate = currentDate.toISOString().slice(0, 19).replace('T', ' ');
-    connection.query(query, [formattedDate], (err, results) => {
-        if (err) {
-            console.log(err);
-            res.json({ message: 'Error' });
+    const { p1, p2 } = req.body;
 
-            return;
-        }
-        console.log('Game added to the database: ' + results);
-        res.status(200).json({ message: 'Game added to the database'}).end(); 
-    });
+    try {
+        // insert players
+        const query = 'INSERT INTO Player (name) VALUES (?)';
+        const [p1Res] = await connection.execute(query, [p1]);
+        const [p2Res] = await connection.execute(query, [p2]);
 
+        // insert game with current timestamp
+        const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const gameQuery = 'INSERT INTO Game (datePlayed) VALUES (?)';
+        const [gameRes] = await connection.execute(gameQuery, [currentDate]);
+
+        // insert player-game relation
+        const playerGameQuery = 'INSERT INTO PlayerGame (player_id, game_id) VALUES (?, ?)';
+        const p1Id = p1Res.insertId;
+        const p2Id = p2Res.insertId;
+        const gameId = gameRes.insertId;
+
+        await connection.execute(playerGameQuery, [p1Id, gameId]);
+        await connection.execute(playerGameQuery, [p2Id, gameId]);
+
+        res.status(200).json({ message: 'Game added to the database' }).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error' }).end();
+    }
 });
 
 
 /* register moves */
 app.post('/mysql/register-move', async (req, res) => {
-    const move = req.body.move;
-    const player = req.body.p1;
-    const game = req.body.game;
-    const value = req.body.value;
+    const { name, player, value } = req.body;
 
-    const query = 'INSERT INTO Moves (name, value, played_by, game_id) VALUES (?, ?, ?, ?)';
-    connection.query(query, [move, value, player, game], (err, results) => {
-        if (err) {
-            console.log(err);
-            res.json({ message: 'Error' });
+    try {
 
-            return;
-        }
-        console.log('Move registered: ' + results);
-        res.status(200).json({ message: 'Move registered'}).end(); 
-    });
+        // get game id
+        const gameQuery = 'SELECT id FROM Game ORDER BY id DESC LIMIT 1';
+        const [gameRes] = await connection.execute(gameQuery);
+        const gameId = gameRes[0].id;
+
+        // get player id
+        const playerQuery = 'SELECT id FROM Player WHERE name = ? ORDER BY id DESC LIMIT 1';
+        const [playerRes] = await connection.execute(playerQuery, [player]);
+        const playerId = playerRes[0].id;
+
+        // insert move
+        const query = 'INSERT INTO Moves (name, value, played_by, game_id) VALUES (?, ?, ?, ?)';
+        await connection.execute(query, [name, value, playerId, gameId]);
+
+        res.status(200).json({ message: 'Move registered' }).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error' }).end();
+    }
 });
 
 /* register winner */
 app.post('/mysql/set-winner/:winner', async (req, res) => {
     const winner = req.params.winner;
-    const game = req.body.game;
+    
+    try {
+        // get current game id
+        const gameQuery = 'SELECT id FROM Game ORDER BY id DESC LIMIT 1';
+        const [gameRes] = await connection.execute(gameQuery);
+        const gameId = gameRes[0].id;
 
-    const query = 'INSERT INTO Winner (player_id, game_id) VALUES (?, ?)';
+        // get winner id
+        const playerQuery = 'SELECT id FROM Player WHERE name = ? ORDER BY id DESC LIMIT 1';
+        const [playerRes] = await connection.execute(playerQuery, [winner]);
+        const playerId = playerRes[0].id;
+
+        // insert winner
+        const query = 'INSERT INTO Winner (player_id, game_id) VALUES (?, ?)';
+        await connection.execute(query, [playerId, gameId]);
+
+        res.status(200).json({ message: 'Winner registered' }).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error' }).end();
+    }
 });
 
 
@@ -197,7 +235,7 @@ app.post('/sqlite/register-move', async (req, res) => {
 /* register winner */
 app.post('/sqlite/set-winner/:winner', async (req, res) => {
     const winner = req.params.winner;
-    
+
     try {
         // get current game id
         const gameQuery = 'SELECT id FROM Game ORDER BY id DESC LIMIT 1';
