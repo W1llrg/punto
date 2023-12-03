@@ -259,6 +259,81 @@ app.post('/sqlite/set-winner/:winner', async (req, res) => {
 });
 
 
+// MONGODB ROUTES
+// /////////////////////////////////////////////////
+
+app.post('/mongo/start-game', async (req, res) => {
+    const { p1, p2 } = req.body;
+
+    try {
+        // Insert players
+        const p1Obj = await Player.create({ name: p1 });
+        const p2Obj = await Player.create({ name: p2 });
+
+        // Insert game with current timestamp
+        const currentDate = new Date().toISOString();
+        const gameObj = await Game.create({ datePlayed: currentDate });
+
+        // Insert player-game relation
+        const p1Id = p1Obj._id;
+        const p2Id = p2Obj._id;
+        const gameId = gameObj._id;
+
+        await PlayerGame.create({ player_id: p1Id, game_id: gameId });
+        await PlayerGame.create({ player_id: p2Id, game_id: gameId });
+
+        res.status(200).json({ message: 'Game added to the database, yo!' }).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error, bitch!' }).end();
+    }
+});
+
+app.post('/mongo/register-move', async (req, res) => {
+    const { name, player, value } = req.body;
+
+    try {
+        // Get game id
+        const latestGame = await Game.findOne().sort({ _id: -1 }).limit(1);
+        const gameId = latestGame._id;
+
+        // Get player id
+        const playerObj = await Player.findOne({ name }).sort({ _id: -1 }).limit(1);
+        const playerId = playerObj._id;
+
+        // Insert move
+        await Moves.create({ name, value, played_by: playerId, game_id: gameId });
+
+        res.status(200).json({ message: 'Move registered, yo!' }).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error, bitch!' }).end();
+    }
+});
+
+app.post('/mongo/set-winner/:winner', async (req, res) => {
+    const winnerName = req.params.winner;
+
+    try {
+        // Get current game id
+        const latestGame = await Game.findOne().sort({ _id: -1 }).limit(1);
+        const gameId = latestGame._id;
+
+        // Get winner id
+        const winnerObj = await Player.findOne({ name: winnerName }).sort({ _id: -1 }).limit(1);
+        const winnerId = winnerObj._id;
+
+        // Insert winner
+        await Winner.create({ player_id: winnerId, game_id: gameId });
+
+        res.status(200).json({ message: 'Winner registered, yo!' }).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error, bitch!' }).end();
+    }
+});
+
+
 // PORT
 // /////////////////////////////////////////////////
 
