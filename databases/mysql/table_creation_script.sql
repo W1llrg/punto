@@ -1,3 +1,5 @@
+-- CREATE USER IF NOT EXISTS 'puntoadmin'@'localhost' IDENTIFIED BY '0xOaft2uX6qsxdHh9XF5DRbmxRUve17x0ca6KSCxfIsaEulg';
+-- GRANT ALL PRIVILEGES ON *.* TO 'puntoadmin'@'localhost';
 CREATE DATABASE IF NOT EXISTS punto;
 
 CREATE TABLE Player 
