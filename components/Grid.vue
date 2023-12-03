@@ -213,6 +213,9 @@ export default {
             if (hMax.includes(5) || vMax.includes(5) || dMax.includes(5)) {
                 this.gameWonBy = player.getName();
                 console.log(`game won by ${this.gameWonBy}!`);
+
+                // database game end
+                axios.post(`http://localhost:3001/sqlite/set-winner/${this.gameWonBy}`);
             }
         },
 
