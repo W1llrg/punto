@@ -171,6 +171,7 @@ app.post('/mysql/set-winner/:winner', async (req, res) => {
     }
 });
 
+/** returns the list of games */
 app.get('/mysql/get-games', async (req, res) => {
     try {
         const query = `
@@ -195,6 +196,7 @@ app.get('/mysql/get-games', async (req, res) => {
     }
 });
 
+/** empties the database */
 app.delete('/mysql/empty-base', async (req, res) => {
     try {
         const query = `
@@ -299,6 +301,7 @@ app.post('/sqlite/set-winner/:winner', async (req, res) => {
     }
 });
 
+/** returns the list of games */
 app.get('/sqlite/get-games', async (req, res) => {
     try {
         const query = `
@@ -323,6 +326,7 @@ app.get('/sqlite/get-games', async (req, res) => {
     }
 });
 
+/** empties the database */
 app.delete('/sqlite/empty-base', async (req, res) => {
     try {
         const query = `
@@ -343,6 +347,7 @@ app.delete('/sqlite/empty-base', async (req, res) => {
 // MONGODB ROUTES
 // /////////////////////////////////////////////////
 
+/* add the game to the db */
 app.post('/mongo/start-game', async (req, res) => {
     const { p1, p2 } = req.body;
 
@@ -370,6 +375,7 @@ app.post('/mongo/start-game', async (req, res) => {
     }
 });
 
+/** register the move in the database */
 app.post('/mongo/register-move', async (req, res) => {
     const { name, player, value } = req.body;
 
@@ -392,6 +398,7 @@ app.post('/mongo/register-move', async (req, res) => {
     }
 });
 
+/** assigns the winner of the game */
 app.post('/mongo/set-winner/:winner', async (req, res) => {
     const winnerName = req.params.winner;
 
