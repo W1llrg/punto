@@ -197,9 +197,27 @@ app.post('/sqlite/register-move', async (req, res) => {
 /* register winner */
 app.post('/sqlite/set-winner/:winner', async (req, res) => {
     const winner = req.params.winner;
-    const game = req.body.game;
+    
+    try {
+        // get current game id
+        const gameQuery = 'SELECT id FROM Game ORDER BY id DESC LIMIT 1';
+        const gameRes = await sqliteConn.get(gameQuery);
+        const gameId = gameRes.id;
 
-    const query = 'INSERT INTO Winner (player_id, game_id) VALUES (?, ?)';
+        // get winner id
+        const playerQuery = 'SELECT id FROM Player WHERE name = ? ORDER BY id DESC LIMIT 1';
+        const playerRes = await sqliteConn.get(playerQuery, [winner]);
+        const playerId = playerRes.id;
+
+        // insert winner
+        const query = 'INSERT INTO Winner (player_id, game_id) VALUES (?, ?)';
+        await sqliteConn.run(query, [playerId, gameId]);
+
+        res.status(200).json({ message: 'Winner registered' }).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error' }).end();
+    }
 });
 
 
