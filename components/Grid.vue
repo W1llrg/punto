@@ -122,6 +122,27 @@ export default {
                     this.playerTurn = (this.playerTurn + 1) % this.players.length;
                     console.log(`${this.players[this.playerTurn].getName()}'s next card is '${this.players[this.playerTurn].getDeck().getNextCard()}`);
                     this.updateBoundaries(rowIndex, cellIndex);
+                } else if (this.grid[rowIndex][cellIndex] !== null && this.isAdjacentPlaced(rowIndex, cellIndex)) {
+                    if (this.allowedCells[rowIndex][cellIndex] === false) {
+                        console.log('cannot place card here!');
+                        return;
+                    }
+
+                    if (pDeck.getNextCardValue() > this.cardsPlayed[rowIndex][cellIndex].getValue()) {
+                        const card = pDeck.pop();
+                        if (card === undefined) {
+                            console.log('no more cards in the deck!');
+                        } else {
+                            this.grid[rowIndex][cellIndex] = card.getName();
+                            this.cardsPlayed[rowIndex][cellIndex] = card;
+                        }
+
+                        this.playerTurn = (this.playerTurn + 1) % this.players.length;
+                        console.log(`${this.players[this.playerTurn].getName()}'s next card is '${this.players[this.playerTurn].getDeck().getNextCard()}`);
+                        this.updateBoundaries(rowIndex, cellIndex);
+                    } else {
+                        console.log('Value of card is too low!');
+                    }
                 } else {
                     console.log('cannot place card here!');
                 }
@@ -287,7 +308,7 @@ export default {
                 let classes = ['cell'];
                 const card = this.cardsPlayed[rowIndex][cellIndex];
                 if (card) {
-                    switch (card.getSprite()) {
+                    switch (card.getColor()) {
                         case 'red':
                             classes.push('red');
                             break;
