@@ -18,6 +18,7 @@
     </div>
 
     <button @click="startGame">Jouer</button>
+    <button @click="manageDb">Gérer les BDD</button>
 </template>
 
 <style scoped>
@@ -41,6 +42,11 @@
                         p1: p1,
                         p2: p2,
                     }
+                });
+            },
+            manageDb() {
+                this.$router.push({
+                    name: 'databases',
                 });
             }
         }
