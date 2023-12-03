@@ -16,8 +16,8 @@ export class Deck {
     createCards() {
         for (let color of this.colors) {
             for (let i = 0; i < this.sizePerColor; i++) {
-                this.cards.push(new Card(`${color}${i}`, color, color));
-                this.cards.push(new Card(`${color}${i}`, color, color));
+                this.cards.push(new Card(`${color}-${i}`, color, i));
+                this.cards.push(new Card(`${color}-${i}`, color, i));
             }
         }
     }
@@ -60,6 +60,10 @@ export class Deck {
         return this.cards[this.cards.length - 1].getName();
     }
 
+    getNextCardValue() {
+        return this.cards[this.cards.length - 1].getValue();
+    }
+
     getDeckSize() {
         return this.cards.length;
     }
@@ -80,12 +84,12 @@ export class Deck {
 class Card {
     name: string;
     color: string;
-    sprite: string;
+    value: number;
 
-    constructor(name: string, color: string, sprite: string) {
+    constructor(name: string, color: string, value: number) {
         this.name = name;
         this.color = color;
-        this.sprite = sprite;
+        this.value = value;
     }
 
     getName() {
@@ -96,7 +100,7 @@ class Card {
         return this.color;
     }
 
-    getSprite() {
-        return this.sprite;
+    getValue() {
+        return this.value;
     }
 }
