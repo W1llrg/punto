@@ -49,11 +49,11 @@ export default {
             player.getDeck().shuffle();
         });
 
-        console.log(players[0].toString());
-        console.log(players[1].toString());
+        // console.log(players[0].toString());
+        // console.log(players[1].toString());
 
-        console.log(`${players[0].getName()} has the following cards:\n\n${players[0].getDeck().toString()}`);
-        console.log(`${players[1].getName()} has the following cards:\n\n${players[1].getDeck().toString()}`);
+        // console.log(`${players[0].getName()} has the following cards:\n\n${players[0].getDeck().toString()}`);
+        // console.log(`${players[1].getName()} has the following cards:\n\n${players[1].getDeck().toString()}`);
 
         return { deck, players };
     },
