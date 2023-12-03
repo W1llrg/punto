@@ -4,7 +4,4 @@ export default {
     serverMiddleware: [
         { path: '/api', handler: '~/server/index.js' },
     ],
-    modules: [
-        'nuxt-mongoose',
-    ],
 };
