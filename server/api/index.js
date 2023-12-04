@@ -368,10 +368,10 @@ app.post('/mongo/start-game', async (req, res) => {
         await PlayerGame.create({ player_id: p1Id, game_id: gameId });
         await PlayerGame.create({ player_id: p2Id, game_id: gameId });
 
-        res.status(200).json({ message: 'Game added to the database, yo!' }).end();
+        res.status(200).json({ message: 'Game added to the database' }).end();
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Error, bitch!' }).end();
+        res.status(500).json({ message: 'Error' }).end();
     }
 });
 
@@ -391,10 +391,10 @@ app.post('/mongo/register-move', async (req, res) => {
         // Insert move
         await Moves.create({ name, value, played_by: playerId, game_id: gameId });
 
-        res.status(200).json({ message: 'Move registered, yo!' }).end();
+        res.status(200).json({ message: 'Move registered' }).end();
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Error, bitch!' }).end();
+        res.status(500).json({ message: 'Error' }).end();
     }
 });
 
@@ -414,10 +414,10 @@ app.post('/mongo/set-winner/:winner', async (req, res) => {
         // Insert winner
         await Winner.create({ player_id: winnerId, game_id: gameId });
 
-        res.status(200).json({ message: 'Winner registered, yo!' }).end();
+        res.status(200).json({ message: 'Winner registered' }).end();
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Error, bitch!' }).end();
+        res.status(500).json({ message: 'Error' }).end();
     }
 });
 
