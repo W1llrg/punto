@@ -52,23 +52,24 @@ export default {
         this.selectedDatabase = database;
         this.displayData(database);
     },
-    purgeDatabase(database) {
-        axios.post(`http://localhost:3001/${database}/empty-base`);
+    async purgeDatabase(database) {
+        await axios.delete(`http://localhost:3001/${database}/empty-base`);
     },
-    displayData(database) {
-        axios.get(`http://localhost:3001/${database}/get-games`)
+    async displayData(database) {
+        await axios.get(`http://localhost:3001/${database}/get-players`)
             .then(response => {
                 if (database === 'sqlite') {
-                    this.sqliteData = response.data;
+                    this.sqliteData = JSON.stringify(response.data);
                 } else if (database === 'mysql') {
-                    this.mysqlData = response.data;
+                    this.mysqlData = JSON.stringify(response.data);
                 } else if (database === 'mongo') {
-                    this.mongoData = response.data;
+                    this.mongoData = JSON.stringify(response.data);
                 }
             })
             .catch(error => {
                 console.error(error);
             });
+        console.log(this.sqliteData);
     }
   }
 };
