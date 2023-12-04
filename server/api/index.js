@@ -301,38 +301,34 @@ app.post('/sqlite/set-winner/:winner', async (req, res) => {
     }
 });
 
+/** returns the list of players */
+app.get('/sqlite/get-players', async (req, res) => {
+    const query = 'SELECT * FROM Player';
+    const players = await sqliteConn.all(query);
+    res.status(200).json({ players }).end();
+});
+
 /** returns the list of games */
 app.get('/sqlite/get-games', async (req, res) => {
-    try {
-        const query = `
-            SELECT 
-                g.id, 
-                g.datePlayed, 
-                p1.name AS p1, 
-                p2.name AS p2, 
-                w.name AS winner 
-            FROM Game g 
-            JOIN PlayerGame pg1 ON g.id = pg1.game_id 
-            JOIN PlayerGame pg2 ON g.id = pg2.game_id 
-            JOIN Player p1 ON pg1.player_id = p1.id 
-            JOIN Player p2 ON pg2.player_id = p2.id 
-            JOIN Winner w ON g.id = w.game_id
-        `;
-        const games = await sqliteConn.all(query);
-        res.status(200).json({ games }).end();
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Error' }).end();
-    }
+    const query = `SELECT * FROM Game`;
+    const games = await sqliteConn.all(query);
+    res.status(200).json({ games }).end();
+});
+
+/** returns the list of winners */
+app.get('/sqlite/get-winners', async (req, res) => {
+    const query = `SELECT * FROM Winner`;
+    const winners = await sqliteConn.all(query);
+    res.status(200).json({ winners }).end();
 });
 
 /** empties the database */
 app.delete('/sqlite/empty-base', async (req, res) => {
     try {
         const query = `
+            DELETE FROM PlayerGame;
             DELETE FROM Game;
             DELETE FROM Player;
-            DELETE FROM PlayerGame;
             DELETE FROM Winner;
             DELETE FROM Moves;
         `;
