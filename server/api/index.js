@@ -5,6 +5,7 @@ import { open } from 'sqlite';
 import morgan from 'morgan';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import neo4j from 'neo4j-driver';
 
 
 // MYSQL DATABASE CONNECTION
@@ -62,6 +63,23 @@ open({
         console.error('>> SQLITE: Database connection failed');
     }
 })
+
+
+// NEO4J DATABASE CONNECTION
+// /////////////////////////////////////////////////
+
+const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'puntoadmin'));
+const session = driver.session();
+
+async function checkConnected() {
+    try {
+        await session.run('MATCH (n) RETURN n LIMIT 1');
+        console.log('>> NEO4J: Database connection established');
+    } catch (err) {
+        console.error('>> NEO4J: Database connection failed');
+    }
+}
+checkConnected();
 
 
 // EXPRESS SERVER
