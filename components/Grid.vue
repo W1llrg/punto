@@ -87,6 +87,13 @@ export default {
                     value: this.cardsPlayed[rowIndex][cellIndex].getValue(),
                 });
 
+                // neo4j
+                axios.post(`http://localhost:3001/neo4j/register-move`, {
+                    name: moveName,
+                    player: curPlayer.getName(),
+                    value: this.cardsPlayed[rowIndex][cellIndex].getValue(),
+                });
+
                 // mongo
                 // axios.post(`http://localhost:3001/mongo/register-move`, {
                 //     name: moveName,
