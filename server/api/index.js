@@ -36,16 +36,16 @@ import Moves from '../../databases/mongo/models/Moves.js';
 import PlayerGame from '../../databases/mongo/models/PlayerGame.js';
 
 // connect to database
-mongoose.connect(`mongodb://0.0.0.0:27017/punto`, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
-mongoose.connection.on('connected', () => {
-    console.log('>> MONGO: Database connection established');
-});
-mongoose.connection.on('error', (err) => {
-    console.error('>> MONGO: Database connection failed: ', err);
-});
+// mongoose.connect(`mongodb://0.0.0.0:27017/punto`, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// });
+// mongoose.connection.on('connected', () => {
+//     console.log('>> MONGO: Database connection established');
+// });
+// mongoose.connection.on('error', (err) => {
+//     console.error('>> MONGO: Database connection failed: ', err);
+// });
 
 
 // SQLITE DATABASE CONNECTION
@@ -435,6 +435,52 @@ app.post('/mongo/set-winner/:winner', async (req, res) => {
     }
 });
 
+
+// NEO4J ROUTES
+// /////////////////////////////////////////////////
+
+app.post('/neo4j/test-insert', async (req, res) => {
+
+    try {
+        const query = `CREATE (p:Player {name: 'Walter'}) RETURN p`;
+        const result = await session.run(query);
+        console.log(result);
+
+        res.status(200).json({ message: 'Test insert' }).end();
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error' }).end();
+    }
+});
+
+/* add the game to the db */
+app.post('/neo4j/start-game', async (req, res) => {
+    const { p1, p2 } = req.body;
+
+    try {
+        // Insert players
+        const p1Obj = await session.run('CREATE (p:Player {name: $name}) RETURN p', { name: p1 });
+        const p2Obj = await session.run('CREATE (p:Player {name: $name}) RETURN p', { name: p2 });
+
+        // Insert game with current timestamp
+        const currentDate = new Date().toISOString();
+        const gameObj = await session.run('CREATE (g:Game {datePlayed: $datePlayed}) RETURN g', { datePlayed: currentDate });
+
+        // Insert player-game relation
+        const p1Id = p1Obj.records[0]._fields[0].identity.low;
+        const p2Id = p2Obj.records[0]._fields[0].identity.low;
+        const gameId = gameObj.records[0]._fields[0].identity.low;
+
+        await session.run('MATCH (p:Player), (g:Game) WHERE ID(p) = $pId AND ID(g) = $gId CREATE (p)-[:PLAYED_IN]->(g)', { pId: p1Id, gId: gameId });
+        await session.run('MATCH (p:Player), (g:Game) WHERE ID(p) = $pId AND ID(g) = $gId CREATE (p)-[:PLAYED_IN]->(g)', { pId: p2Id, gId: gameId });
+
+        res.status(200).json({ message: 'Game added to the database' }).end();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error' }).end();
+    }
+
+});
 
 // PORT
 // /////////////////////////////////////////////////

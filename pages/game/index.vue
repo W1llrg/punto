@@ -52,17 +52,34 @@ export default {
 
         // insertion into db
         //sqlite
-        axios.post(`http://localhost:3001/sqlite/start-game`, {
-            p1: players[0].getName(),
-            p2: players[1].getName(),
-        });
+        try {            
+            axios.post(`http://localhost:3001/sqlite/start-game`, {
+                p1: players[0].getName(),
+                p2: players[1].getName(),
+            });
+        } catch (error) {
+            console.log(error);
+        }
 
         //mysql
-        axios.post(`http://localhost:3001/mysql/start-game`, {
-            p1: players[0].getName(),
-            p2: players[1].getName(),
-        });
+        try {            
+            axios.post(`http://localhost:3001/mysql/start-game`, {
+                p1: players[0].getName(),
+                p2: players[1].getName(),
+            });
+        } catch (error) {
+            console.log(error);
+        }    
 
+        // neo4j
+        try {            
+            axios.post(`http://localhost:3001/neo4j/start-game`, {
+                p1: players[0].getName(),
+                p2: players[1].getName(),
+            });
+        } catch (error) {
+            console.log(error);
+        }    
         // mongo
         // axios.post(`http://localhost:3001/mongo/start-game`, {
         //     p1: players[0].getName(),
