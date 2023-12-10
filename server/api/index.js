@@ -466,20 +466,41 @@ app.post('/neo4j/start-game', async (req, res) => {
         const currentDate = new Date().toISOString();
         const gameObj = await session.run('CREATE (g:Game {datePlayed: $datePlayed}) RETURN g', { datePlayed: currentDate });
 
-        // Insert player-game relation
-        const p1Id = p1Obj.records[0]._fields[0].identity.low;
-        const p2Id = p2Obj.records[0]._fields[0].identity.low;
-        const gameId = gameObj.records[0]._fields[0].identity.low;
-
-        await session.run('MATCH (p:Player), (g:Game) WHERE ID(p) = $pId AND ID(g) = $gId CREATE (p)-[:PLAYED_IN]->(g)', { pId: p1Id, gId: gameId });
-        await session.run('MATCH (p:Player), (g:Game) WHERE ID(p) = $pId AND ID(g) = $gId CREATE (p)-[:PLAYED_IN]->(g)', { pId: p2Id, gId: gameId });
-
         res.status(200).json({ message: 'Game added to the database' }).end();
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Error' }).end();
     }
+});
 
+/** register the move in the database */
+app.post('/neo4j/register-move', async (req, res) => {
+    const { name, player, value } = req.body;
+
+    try {
+        // Get game id
+        const latestGame = await session.run('MATCH (g:Game) RETURN g ORDER BY ID(g) DESC LIMIT 1');
+        const gameId = latestGame.records[0]._fields[0].identity.low;
+
+        // Get player id
+        const playerObj = await session.run('MATCH (p:Player) WHERE p.name = $name RETURN p ORDER BY ID(p) DESC LIMIT 1', { name: player });
+        const playerId = playerObj.records[0]._fields[0].identity.low;
+
+        // Insert move
+        const createMoveQuery = `
+            MATCH (p:Player), (g:Game)
+            WHERE ID(p) = $playerId AND ID(g) = $gameId
+            CREATE (m:Move {name: $name, value: $value})
+            MERGE (p)-[:HAS_PLAYED]->(m)-[:IN_GAME]->(g)
+            RETURN m;
+            `;
+        const moveResult = await session.run(createMoveQuery, { name, playerId, value, gameId });
+
+        res.status(200).json({ message: 'Move registered' }).end();
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error' }).end();
+    }
 });
 
 // PORT
