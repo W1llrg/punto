@@ -24,7 +24,7 @@
     "mongoose": "^8.0.2",
     "morgan": "^1.10.0",
     "mysql2": "^3.6.5",
-    "neo4j": "^2.0.0-RC2",
+    "neo4j-driver": "^5.15.0",
     "safer-buffer": "^2.1.2",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.6"
