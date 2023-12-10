@@ -245,6 +245,9 @@ export default {
                     // mysql
                     axios.post(`http://localhost:3001/mysql/set-winner/${this.gameWonBy}`);
 
+                    // neo4j
+                    axios.post(`http://localhost:3001/neo4j/set-winner/${this.gameWonBy}`);
+
                     // mongo
                     // axios.post(`http://localhost:3001/mongo/set-winner/${this.gameWonBy}`);
 
