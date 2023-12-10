@@ -503,6 +503,35 @@ app.post('/neo4j/register-move', async (req, res) => {
     }
 });
 
+/** assigns the winner of the game */
+app.post('/neo4j/set-winner/:winner', async (req, res) => {
+    const winnerName = req.params.winner;
+
+    try {
+        // Get current game id
+        const latestGame = await session.run('MATCH (g:Game) RETURN g ORDER BY ID(g) DESC LIMIT 1');
+        const gameId = latestGame.records[0]._fields[0].identity.low;
+
+        // Get winner id
+        const winnerObj = await session.run('MATCH (p:Player) WHERE p.name = $name RETURN p ORDER BY ID(p) DESC LIMIT 1', { name: winnerName });
+        const winnerId = winnerObj.records[0]._fields[0].identity.low;
+
+        // Insert winner
+        const createWinnerQuery = `
+            MATCH (p:Player), (g:Game)
+            WHERE ID(p) = $winnerId AND ID(g) = $gameId
+            MERGE (p)-[:HAS_WON]->(g)
+            RETURN p, g;
+            `;
+        const winnerResult = await session.run(createWinnerQuery, { winnerId, gameId });
+
+        res.status(200).json({ message: 'Winner registered' }).end();
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error' }).end();
+    }
+});
+
 // PORT
 // /////////////////////////////////////////////////
 
