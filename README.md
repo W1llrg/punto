@@ -61,7 +61,33 @@ use punto
 
 L'ORM se chargera de créer les collections et les documents nécessaires lors de l'exécution du code.
 
-### 5. Lancement de l'application et du serveur
+### 5. Mise en place de Neo4j
+
+Il faut récupérer l'image officielle de Neo4j sur Docker Hub :
+
+```bash
+docker pull neo4j:latest
+```
+
+Il faut ensuite lancer le conteneur :
+
+```bash
+docker run -d -p 7687:7687 -p 7474:7474 --name neo4j-punto neo4j:latest
+```
+
+Une fois le conteneur lancé, il faut changer le mot de passe de l'utilisateur `neo4j` :
+
+```bash
+# se connecter au conteneur
+docker exec -it neo4j-punto cypher-shell -u neo4j -p neo4j
+
+# à la connexion, changer le mot de passe quand demandé
+# ctrl + d pour quitter
+```
+
+Pas besoin de configuration supplémentaire pour Neo4J.
+
+### 6. Lancement de l'application et du serveur
 
 Pour démarrer l'application, il suffit de lancer la commande suivante :
 
@@ -79,4 +105,5 @@ Il devrait retourner les messages suivants :
 >> MYSQL: Database connection established
 >> SQLITE: Database connection established
 >> MONGO: Database connection established
+>> NEO4J: Database connection established
 ```
