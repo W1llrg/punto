@@ -1,5 +1,5 @@
 <template>
-    <h1 class="main-title" style="text-align: center;">Puntooooooo</h1>
+    <h1 class="main-title text-3xl font-bold underline" style="text-align: center;">Puntooooooo</h1>
     <div class="desc">
         <p>
             Bienvenue sur le jeu du Punto!<br>

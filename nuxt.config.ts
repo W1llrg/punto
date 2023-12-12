@@ -4,4 +4,11 @@ export default {
     serverMiddleware: [
         { path: '/api', handler: '~/server/index.js' },
     ],
+    css: ['~/assets/css/main.scss'],
+    postcss: {
+        plugins: {
+            tailwindcss: {},
+            autoprefixer: {},
+        },
+    },
 };
